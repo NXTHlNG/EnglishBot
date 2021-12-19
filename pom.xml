@@ -17,6 +17,7 @@
 		<java.version>11</java.version>
 		<telegrambots.version>5.4.0.1</telegrambots.version>
 		<telegrambots-spring-boot-starter.version>5.5.0</telegrambots-spring-boot-starter.version>
+		<telegrambotsextensions.version>5.5.0</telegrambotsextensions.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -39,6 +40,12 @@
 			<groupId>org.telegram</groupId>
 			<artifactId>telegrambots</artifactId>
 			<version>${telegrambots.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.telegram</groupId>
+			<artifactId>telegrambotsextensions</artifactId>
+			<version>${telegrambotsextensions.version}</version>
 		</dependency>
 
 		<dependency>
