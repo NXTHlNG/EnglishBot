@@ -2,6 +2,8 @@ package ru.nxthing.factory;
 
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import ru.nxthing.command.SubscribeCollectionCallback;
+import ru.nxthing.command.UnsubscribeCollectionCallback;
 
 import java.util.List;
 
@@ -14,7 +16,7 @@ public class KeyboardFactory {
 
     public static InlineKeyboardMarkup createMultipleKeyboard(int index) {
         return InlineKeyboardMarkup.builder()
-                .keyboardRow(List.of(createShowWordsButton(index)))
+                .keyboardRow(List.of(createShowWordsButton(index), createSubscribeCollectionButton(index)))
                 .keyboardRow(List.of(createPreviousCollectionButton(index), createNextCollectionButton(index)))
                 .build();
     }
@@ -23,6 +25,13 @@ public class KeyboardFactory {
         return InlineKeyboardButton.builder()
                 .text("Показать слова")
                 .callbackData("collection_show_words" + " " + index)
+                .build();
+    }
+
+    private static InlineKeyboardButton createSubscribeCollectionButton(int index) {
+        return InlineKeyboardButton.builder()
+                .text("Подписаться")
+                .callbackData(SubscribeCollectionCallback.callbackName + " " + index)
                 .build();
     }
 
@@ -50,6 +59,34 @@ public class KeyboardFactory {
         return InlineKeyboardButton.builder()
                 .text("Назад")
                 .callbackData("collection_show" + " " + index)
+                .build();
+    }
+
+    public static InlineKeyboardMarkup createSubscribesKeyboard(int index) {
+        return InlineKeyboardMarkup.builder()
+                .keyboardRow(List.of(createUnsubscribeCollectionButton(index)))
+                .keyboardRow(List.of(createPreviousSubscribeButton(index), createNextSubscribeButton(index)))
+                .build();
+    }
+
+    private static InlineKeyboardButton createNextSubscribeButton(int index) {
+        return InlineKeyboardButton.builder()
+                .text("Далее")
+                .callbackData("subscribe_show" + " " + (index + 1))
+                .build();
+    }
+
+    private static InlineKeyboardButton createPreviousSubscribeButton(int index) {
+        return InlineKeyboardButton.builder()
+                .text("Назад")
+                .callbackData("subscribe_show" + " " + (index - 1))
+                .build();
+    }
+
+    private static InlineKeyboardButton createUnsubscribeCollectionButton(int index) {
+        return InlineKeyboardButton.builder()
+                .text("Отписаться")
+                .callbackData("collection_unsubscribe" + " " + index)
                 .build();
     }
 }

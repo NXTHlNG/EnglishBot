@@ -13,15 +13,13 @@ import ru.nxthing.service.BotUserService;
 import ru.nxthing.service.WordCollectionService;
 
 @Component
-public class SubscribeCollectionCallback extends AbstractBotCallback {
-    public static final String callbackName = "collection_subscribe";
-    public static final String SUBSCRIBE_SUCCESS = "Вы подписались на коллекцию";
-    public static final String SUBSCRIBE_NOT_SUCCESS = "Вы уже подписаны на эту коллекцию";
+public class UnsubscribeCollectionCallback extends AbstractBotCallback {
+    public static final String callbackName = "collection_unsubscribe";
 
     private final WordCollectionService wordCollectionService;
     private final BotUserService botUserService;
 
-    public SubscribeCollectionCallback(WordCollectionService wordCollectionService, BotUserService botUserService) {
+    public UnsubscribeCollectionCallback(WordCollectionService wordCollectionService, BotUserService botUserService) {
         super(callbackName);
         this.wordCollectionService = wordCollectionService;
         this.botUserService = botUserService;
@@ -31,26 +29,20 @@ public class SubscribeCollectionCallback extends AbstractBotCallback {
     public void execute(AbsSender absSender, User user, Chat chat, Integer messageId, CallbackQuery callbackQuery, String[] arguments) {
         int collectionIndex = Integer.parseInt(arguments[0]);
 
+        BotUser botUser = botUserService.findByChatId(chat.getId()).get();
         WordCollection collection = wordCollectionService.findAll().get(collectionIndex);
 
-        BotUser botUser = botUserService.findByChatId(chat.getId()).get();
+        botUser.getSubscribedCollections().remove(collection);
+        botUserService.save(botUser);
 
-        String message;
-
-        if (botUser.getSubscribedCollections().stream().anyMatch(wordCollection -> wordCollection.getId() == collection.getId())) {
-            message = SUBSCRIBE_NOT_SUCCESS;
-        }
-        else {
-            botUser.getSubscribedCollections().add(collection);
-            botUserService.save(botUser);
-            message = SUBSCRIBE_SUCCESS;
-        }
+        collection.getBotUserList().remove(botUser);
+        wordCollectionService.save(collection);
 
         try {
             absSender.execute(SendMessage
                     .builder()
                     .chatId(chat.getId().toString())
-                    .text(message)
+                    .text("Подписка отменена")
                     .build());
         } catch (TelegramApiException e) {
             e.printStackTrace();

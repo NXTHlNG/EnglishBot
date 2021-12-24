@@ -3,8 +3,7 @@ package ru.nxthing.repository.entities;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 @Data
 @Entity
@@ -17,9 +16,11 @@ public class BotUser {
     @Column(name = "active")
     private boolean active;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "bot_user_collection",
             joinColumns = @JoinColumn(name = "bot_user_id"),
             inverseJoinColumns = @JoinColumn(name = "collection_id"))
     private Set<WordCollection> subscribedCollections = new LinkedHashSet<>();
+
+
 }

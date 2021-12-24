@@ -1,5 +1,8 @@
 package ru.nxthing.bot;
 
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -11,7 +14,6 @@ import ru.nxthing.command.BotCommand;
 import ru.nxthing.command.CommandRegistry;
 
 import java.util.Collection;
-import java.util.List;
 
 @Component
 public class Bot extends TelegramLongPollingBot {
@@ -49,9 +51,16 @@ public class Bot extends TelegramLongPollingBot {
         commandRegistry.executeCallback(this, update.getCallbackQuery());
     }
 
+    public void processPollUpdate(Update update) {
+
+    }
+
     public void processNonCommandUpdate(Update update) {
         if (update.hasCallbackQuery()) {
             processCallback(update);
+        }
+        else if (update.hasPoll()) {
+            processPollUpdate(update);
         }
         else {
             try {

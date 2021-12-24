@@ -27,19 +27,11 @@ public class Word {
     @ManyToMany(mappedBy = "words", fetch = FetchType.EAGER)
     private List<WordCollection> wordCollections = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "translation",
             joinColumns = @JoinColumn(name = "word_id_1"),
             inverseJoinColumns = @JoinColumn(name = "word_id_2"))
     private List<Word> translations = new ArrayList<>();
-
-    public List<Word> getTranslations() {
-        return translations;
-    }
-
-    public void setTranslations(List<Word> translations) {
-        this.translations = translations;
-    }
 
     @Override
     public String toString() {

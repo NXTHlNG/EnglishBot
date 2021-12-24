@@ -6,40 +6,50 @@ import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.nxthing.repository.BotUserRepository;
-import ru.nxthing.repository.entities.BotUser;
+import ru.nxthing.factory.KeyboardFactory;
 import ru.nxthing.repository.entities.WordCollection;
+import ru.nxthing.service.BotUserService;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class ShowSubscribedCollectionsCommand extends AbstarctBotCommand {
     private static final String commandIdentifier = "show_subscribes";
     private static final String description = "Показывает все подписки на коллеции";
 
-    private BotUserRepository botUserRepository;
+    private BotUserService botUserService;
 
-    public ShowSubscribedCollectionsCommand(BotUserRepository botUserRepository) {
+    public ShowSubscribedCollectionsCommand(BotUserService botUserService) {
         super(commandIdentifier, description);
-        this.botUserRepository = botUserRepository;
+        this.botUserService = botUserService;
     }
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, Integer messageId, String[] arguments) {
-        Set<WordCollection> subscribes = botUserRepository.findById(chat.getId()).get().getSubscribedCollections();
+//        Set<WordCollection> subscribes = botUserRepository.findById(chat.getId()).get().getSubscribedCollections();
+        List<WordCollection> subscribes = new ArrayList<>(botUserService.findByChatId(chat.getId()).get().getSubscribedCollections());
 
         StringBuilder message = new StringBuilder();
 
-        for (WordCollection collection : subscribes) {
-            message.append(collection.toString()).append("\n\n");
-        }
+        SendMessage sendMessage = new SendMessage();
 
-        if (message.toString().isEmpty()) {
+        if (subscribes.isEmpty()) {
             message.append("У вас нет подписок на коллекции");
+        } else {
+            WordCollection subscribe = subscribes.get(0);
+            message.append("<b>Коллекция 1/")
+                    .append(subscribes.size())
+                    .append("</b>\n")
+                    .append(subscribe.toString());
+            sendMessage.setReplyMarkup(KeyboardFactory.createSubscribesKeyboard(0));
         }
 
         try {
-            absSender.execute(SendMessage.builder().chatId(chat.getId().toString()).text(message.toString()).parseMode("HTML").build());
+            sendMessage.setText(message.toString());
+            sendMessage.setParseMode("HTML");
+            sendMessage.setChatId(chat.getId().toString());
+            absSender.execute(sendMessage);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }

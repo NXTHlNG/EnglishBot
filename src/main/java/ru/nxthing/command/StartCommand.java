@@ -17,7 +17,7 @@ public class StartCommand extends AbstarctBotCommand {
     private static final String commandIdentifier = "start";
     private static final String description = "Стартовая команда";
 
-    private static final String message = "Стартовое сообщение";
+    private static final String message = "Этот бот поможет вам в заучивании английских слов. Ипользуйте /help для получения информации о доступных командах";
 
     private final BotUserService botUserService;
 

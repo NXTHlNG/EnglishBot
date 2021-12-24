@@ -1,10 +1,10 @@
 package ru.nxthing.repository.entities;
 
 import lombok.Data;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -25,11 +25,14 @@ public class WordCollection {
     @Column(name = "description")
     private String description;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "collection_word",
             joinColumns = @JoinColumn(name = "collection_id"),
             inverseJoinColumns = @JoinColumn(name = "word_id"))
-    public Set<Word> words = new LinkedHashSet<>();
+    private Set<Word> words = new LinkedHashSet<>();
+
+    @ManyToMany(mappedBy = "subscribedCollections", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<BotUser> botUserList = new LinkedList<>();
 
     @Override
     public String toString() {
