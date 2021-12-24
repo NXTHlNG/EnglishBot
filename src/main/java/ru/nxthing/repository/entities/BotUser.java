@@ -2,10 +2,9 @@ package ru.nxthing.repository.entities;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -17,4 +16,10 @@ public class BotUser {
 
     @Column(name = "active")
     private boolean active;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "bot_user_collection",
+            joinColumns = @JoinColumn(name = "bot_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "collection_id"))
+    private Set<WordCollection> subscribedCollections = new LinkedHashSet<>();
 }

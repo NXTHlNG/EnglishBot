@@ -31,13 +31,28 @@ public class Word {
     @JoinTable(name = "translation",
             joinColumns = @JoinColumn(name = "word_id_1"),
             inverseJoinColumns = @JoinColumn(name = "word_id_2"))
-    private Set<Word> translations = new LinkedHashSet<>();
+    private List<Word> translations = new ArrayList<>();
 
-    public Set<Word> getTranslations() {
+    public List<Word> getTranslations() {
         return translations;
     }
 
-    public void setTranslations(Set<Word> translations) {
+    public void setTranslations(List<Word> translations) {
         this.translations = translations;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder reply = new StringBuilder(word + " — ");
+
+        int k = 0;
+        for (Word translation : translations) {
+            reply.append(translation.getWord());
+            if (++k < translations.size()) {
+                reply.append(", ");
+            }
+        }
+
+        return reply.toString();
     }
 }

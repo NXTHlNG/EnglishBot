@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
 public class InvalidCommand implements BotCommand {
-    private static final String textMessage = "Неверная команда";
+    private static final String textMessage = "Неверная команда, используй /help, чтобы увидеть список доступных команд";
 
     @Override
     public String getCommandIdentifier() {

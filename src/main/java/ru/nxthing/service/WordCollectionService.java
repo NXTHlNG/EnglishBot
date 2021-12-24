@@ -21,6 +21,4 @@ public class WordCollectionService {
     public List<WordCollection> findAll() {
         return wordCollectionRepository.findAll();
     }
-
-
 }

@@ -19,4 +19,15 @@ public class CommandRegistryConfig {
 
         return map;
     }
+
+    @Bean
+    public Map<String, BotCallback> callbackRegistryMap(List<AbstractBotCallback> abstractBotCallbacks) {
+        Map<String, BotCallback> map = new HashMap<>();
+
+        for (BotCallback callback : abstractBotCallbacks) {
+            map.put(callback.getCallbackName(), callback);
+        }
+
+        return map;
+    }
 }
